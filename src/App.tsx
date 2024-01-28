@@ -10,16 +10,12 @@ function App() {
     hard: { width: 24, height: 20, mines: 99 },
   };
 
-  const [mode, setMode] = useState<string>('easy');
-  const onModeChange = (value: string) => {
-    setMode(value);
-    console.log(value);
-  };
+  const [mode, setMode] = useState<string>('medium');
   return (
     <>
       <div className="flex flex-col justify-center items-center h-screen">
-        <ModeSelection onModeChange={onModeChange} modes={Object.keys(modes)} />
-        <Board mode={modes[mode]} />
+        <ModeSelection onModeChange={(value)=>setMode(value)} modes={Object.keys(modes)} />
+        {!!mode && <Board mode={modes[mode]} />}
       </div>
     </>
   );

@@ -10,7 +10,7 @@ const ModeSelection = ({ onModeChange, modes }: IProps) => {
     <>
       <h1 className="m-1 text-xl text-center">Select difficulty:</h1>
       <Tabs
-        defaultValue="account"
+        defaultValue="medium"
         onValueChange={onModeChange}
         className="w-[400px] text-center">
         <TabsList>
