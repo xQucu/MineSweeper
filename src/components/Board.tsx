@@ -12,9 +12,7 @@ type TBoard = {
   isRevealed: boolean;
 }[][];
 
-const onTileClick = (x: number, y: number) => {
-  console.log(x, y);
-};
+type TGameState = 'notStarted' | 'started' | 'finished';
 
 const createBoard = ({ width, height }: IMode): TBoard => {
   return Array.from(Array(width), () =>
@@ -22,16 +20,61 @@ const createBoard = ({ width, height }: IMode): TBoard => {
   );
 };
 
+const revealSequence = (x: number, y: number, newBoard: TBoard) => {
+  const offsets = [-1, 0, 1];
+
+  const revealCell = (x: number, y: number) => {
+    if (newBoard[x][y].isRevealed) return;
+    newBoard[x][y].isRevealed = true;
+    if (newBoard[x][y].value === 0) {
+      offsets.forEach((xOffset) => {
+        offsets.forEach((yOffset) => {
+          const newX = x + xOffset;
+          const newY = y + yOffset;
+          if (
+            newX >= 0 &&
+            newY >= 0 &&
+            newX < newBoard.length &&
+            newY < newBoard[0].length
+          ) {
+            revealCell(newX, newY);
+          }
+        });
+      });
+    }
+  };
+
+  revealCell(x, y);
+};
+
 const Board = ({ mode }: IProps) => {
   // -1 -> mine
   // 0 -> empty
-  const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [gameState, setGameState] = useState<TGameState>('notStarted');
   const [board, setBoard] = useState<TBoard>([]);
   useEffect(() => {
     setBoard(createBoard(mode));
-    setIsStarted(false);
+    setGameState('notStarted');
   }, [mode]);
   console.log(board);
+
+  const onTileClick = (x: number, y: number, startingBoard?: TBoard) => {
+    const newBoard = startingBoard ?? JSON.parse(JSON.stringify(board));
+    if (newBoard[x][y].value == -1) {
+      // game over, player failed
+      setGameState('finished');
+      console.log('game over');
+      return;
+    }
+    // game still in progress
+    if (newBoard[x][y].value == 0) {
+      // cells reveal sequence
+      revealSequence(x, y, newBoard);
+    }
+    newBoard[x][y].isRevealed = true;
+
+    setBoard(newBoard);
+  };
 
   const startGame = (x: number, y: number) => {
     // deep copy of board table
@@ -63,64 +106,37 @@ const Board = ({ mode }: IProps) => {
       }
     }
     // generating numbers
-    newBoard.map((row: { value: number; isRevealed: boolean }[], x) =>
+    newBoard.map((row: { value: number; isRevealed: boolean }[], x: number) =>
       row.map((state, y) => {
         const value = state.value;
-        if (value != -1) {
+        if (value !== -1) {
           let sum = 0;
+          const offsets = [-1, 0, 1];
 
-          if (y - 1 >= 0 && newBoard[x][y - 1].value === -1) {
-            sum++;
-          }
+          offsets.forEach((xOffset) => {
+            offsets.forEach((yOffset) => {
+              const newX = x + xOffset;
+              const newY = y + yOffset;
 
-          if (x - 1 >= 0 && newBoard[x - 1][y].value === -1) {
-            sum++;
-          }
-
-          if (x - 1 >= 0 && y - 1 >= 0 && newBoard[x - 1][y - 1] === -1) {
-            sum++;
-          }
-
-          if (
-            x - 1 >= 0 &&
-            y + 1 < newBoard[0].length &&
-            newBoard[x - 1][y + 1].value === -1
-          ) {
-            sum++;
-          }
-
-          if (y + 1 < newBoard[0].length && newBoard[x][y + 1].value === -1) {
-            sum++;
-          }
-
-          if (x + 1 < newBoard.length && newBoard[x + 1][y].value === -1) {
-            sum++;
-          }
-
-          if (
-            x + 1 < newBoard.length &&
-            y + 1 < newBoard[0].length &&
-            newBoard[x + 1][y + 1].value === -1
-          ) {
-            sum++;
-          }
-
-          if (
-            x + 1 < newBoard.length &&
-            y - 1 >= 0 &&
-            newBoard[x + 1][y - 1].value === -1
-          ) {
-            sum++;
-          }
+              if (
+                newX >= 0 &&
+                newX < newBoard.length &&
+                newY >= 0 &&
+                newY < newBoard[0].length &&
+                newBoard[newX][newY].value === -1
+              ) {
+                sum++;
+              }
+            });
+          });
 
           newBoard[x][y].value = sum;
         }
       })
     );
 
-    setBoard(newBoard);
-    setIsStarted(true);
-    onTileClick(x, y);
+    setGameState('started');
+    onTileClick(x, y, newBoard);
   };
 
   const rows: string = `grid-rows-[${Array(mode.height)
@@ -136,7 +152,7 @@ const Board = ({ mode }: IProps) => {
       <div className="flex flex-row gap-1">
         <div>Mines left</div>
         <div>|</div>
-        {isStarted && <Timer />}
+        {gameState != 'notStarted' && <Timer />}
       </div>
       <div className={cn(`grid grid-flow-col m-4`, rows)}>
         {board.map((row, x) =>
@@ -145,12 +161,20 @@ const Board = ({ mode }: IProps) => {
               key={`${x} + ${y}`}
               data-x-y={`${x}, ${y}`}
               className={cn(
-                'w-8 h-8 border bg-primary cursor-pointer text-primary-foreground',
-                box.value === -1 && 'bg-secondary'
+                'w-8 h-8 border bg-primary  text-primary-foreground',
+                box.value === -1 && gameState == 'finished' && 'bg-secondary',
+                !box.isRevealed && 'cursor-pointer',
+                box.isRevealed && 'bg-red-500'
               )}
               onClick={() =>
-                !isStarted ? startGame(x, y) : onTileClick(x, y)
-              }></div>
+                gameState == 'notStarted'
+                  ? startGame(x, y)
+                  : !box.isRevealed &&
+                    gameState == 'started' &&
+                    onTileClick(x, y)
+              }>
+              {box.isRevealed && box.value > 0 && box.value}
+            </div>
           ))
         )}
       </div>
