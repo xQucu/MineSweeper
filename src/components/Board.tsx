@@ -171,7 +171,7 @@ const Board = ({ mode }: IProps) => {
       <div className="flex flex-row gap-1">
         <div>{flags}</div>
         <div>|</div>
-        {gameState != 0 && <Timer />}
+        {gameState != 0 && <Timer gameState={gameState} />}
       </div>
       <div className={cn(`grid grid-flow-col m-4`, rows)}>
         {board.map((row, x) =>
