@@ -7,8 +7,7 @@ interface IProps {
 
 const ModeSelection = ({ onModeChange, modes }: IProps) => {
   return (
-    <>
-      <h1 className="m-1 text-xl text-center">Select difficulty:</h1>
+    <div className="z-20">
       <Tabs
         defaultValue="medium"
         onValueChange={onModeChange}
@@ -21,7 +20,7 @@ const ModeSelection = ({ onModeChange, modes }: IProps) => {
           ))}
         </TabsList>
       </Tabs>
-    </>
+    </div>
   );
 };
 
