@@ -170,7 +170,7 @@ const Board = ({ mode }: IProps) => {
         flags={flags}
         onGameRestart={restartGame}
       />
-      <div className={cn(`grid grid-flow-col m-4 z-20`, rows)}>
+      <div className={cn(`grid grid-flow-col m-4`, rows)}>
         {board.map((row, x) =>
           row.map((box, y) => (
             <div
