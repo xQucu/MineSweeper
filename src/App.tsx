@@ -3,7 +3,6 @@ import ModeSelection from './components/ModeSelection';
 import Board from './components/Board';
 import IModes from './models/IModes';
 import { ThemeProvider } from './components/theme-provider';
-import { ModeToggle } from './components/mode-toggle';
 
 function App() {
   const modes: IModes = {
@@ -15,7 +14,6 @@ function App() {
   const [mode, setMode] = useState<string>('medium');
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <ModeToggle />
       <div className="flex flex-col justify-center items-center h-screen">
         <ModeSelection
           onModeChange={(value) => setMode(value)}
