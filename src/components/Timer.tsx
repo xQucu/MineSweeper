@@ -1,3 +1,4 @@
+import { TimerIcon } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 
 interface IProps {
@@ -14,17 +15,18 @@ const Timer = ({ gameState }: IProps) => {
         setTime((prevTime) => ++prevTime);
       }, 1000);
     }
-    if (gameState === -1) {
-      clearInterval(intervalRef.current);
-    }
 
     return () => {
       clearInterval(intervalRef.current);
+      gameState == -1 && setTime(0);
     };
   }, [gameState]);
 
-
-  return <div>{time}</div>;
+  return (
+    <div className="flex flex-row gap-1">
+      <TimerIcon /> {time}
+    </div>
+  );
 };
 
 export default Timer;

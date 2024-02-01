@@ -1,7 +1,7 @@
 import IMode from '@/models/IMode';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import Timer from './Timer';
+import GameInfo from './GameInfo';
 
 interface IProps {
   mode: IMode;
@@ -83,14 +83,11 @@ const Board = ({ mode }: IProps) => {
       // cells reveal sequence
       revealSequence(x, y, newBoard);
     } else {
-      setGameState(
-        (g) => {
-          console.log(mode.width * mode.height - mode.mines);
-          console.log(g - 1);
-          return mode.width * mode.height - mode.mines - 1 == g ? -1 : g + 1;
-        }
-        // todo in two places make it -1 when all squares except mines are revealed
-      );
+      setGameState((g) => {
+        console.log(mode.width * mode.height - mode.mines);
+        console.log(g - 1);
+        return mode.width * mode.height - mode.mines - 1 == g ? -1 : g + 1;
+      });
     }
     newBoard[x][y].isRevealed = true;
 
@@ -168,11 +165,11 @@ const Board = ({ mode }: IProps) => {
 
   return (
     <>
-      <div className="flex flex-row gap-1">
-        <div>{flags}</div>
-        <div>|</div>
-        {gameState != 0 && <Timer gameState={gameState} />}
-      </div>
+      <GameInfo
+        gameState={gameState}
+        flags={flags}
+        onGameRestart={restartGame}
+      />
       <div className={cn(`grid grid-flow-col m-4`, rows)}>
         {board.map((row, x) =>
           row.map((box, y) => (
