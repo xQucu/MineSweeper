@@ -47,6 +47,10 @@ const Board = ({ mode }: IProps) => {
       setGameState((g) =>
         mode.width * mode.height - mode.mines === gameState - 1 ? -1 : g + 1
       );
+      if (newBoard[x][y].isFlagged) {
+        setFlags((f) => f+1);
+        newBoard[x][y].isFlagged = false;
+      }
       newBoard[x][y].isRevealed = true;
       if (newBoard[x][y].value === 0) {
         offsets.forEach((xOffset) => {
@@ -185,7 +189,7 @@ const Board = ({ mode }: IProps) => {
               )}
               onContextMenu={(e) => {
                 e.preventDefault();
-                if (gameState != -1) {
+                if (gameState != -1 && !box.isRevealed) {
                   setFlags((f) => (box.isFlagged ? f + 1 : f - 1));
                   const newBoard: TBoard = JSON.parse(JSON.stringify(board));
                   newBoard[x][y].isFlagged = !newBoard[x][y].isFlagged;
