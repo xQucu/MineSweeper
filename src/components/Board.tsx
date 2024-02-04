@@ -163,7 +163,8 @@ const Board = ({ mode }: IProps) => {
   const rows: string = `grid-rows-[${Array(mode.height)
     .fill('1fr')
     .join('_')}]`;
-  //* this comment is for tailwindcss to generate grid properly
+  //* this comment is for tailwindcss to generate grid properly,
+  // ! if you want to add more grid sizes you may need to include them in comment below
   // grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]
   // grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]
   // grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]
