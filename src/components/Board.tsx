@@ -39,6 +39,7 @@ const Board = ({ mode }: IProps) => {
   const restartGame = () => {
     setBoard(createBoard(mode));
     setGameState(0);
+    setFlags(mode.mines);
   };
   const revealSequence = (x: number, y: number, newBoard: TBoard) => {
     const offsets = [-1, 0, 1];
@@ -48,7 +49,7 @@ const Board = ({ mode }: IProps) => {
         mode.width * mode.height - mode.mines === gameState - 1 ? -1 : g + 1
       );
       if (newBoard[x][y].isFlagged) {
-        setFlags((f) => f+1);
+        setFlags((f) => f + 1);
         newBoard[x][y].isFlagged = false;
       }
       newBoard[x][y].isRevealed = true;
