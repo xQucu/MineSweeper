@@ -186,7 +186,11 @@ const Board = ({ mode }: IProps) => {
                 box.value === -1 && gameState == -1 && 'bg-secondary',
                 !box.isRevealed && 'cursor-pointer',
                 box.isRevealed && 'bg-red-500',
-                box.isFlagged && 'bg-blue-500'
+                box.isFlagged && 'bg-blue-500',
+                gameState == -1 &&
+                  box.value !== -1 &&
+                  box.isFlagged &&
+                  'bg-yellow-500'
               )}
               onContextMenu={(e) => {
                 e.preventDefault();
