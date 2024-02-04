@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import Timer from './Timer';
 import { Meteors } from './ui/meteors';
-import { FlagTriangleRight, Trophy } from 'lucide-react';
+import { FlagTriangleRight } from 'lucide-react';
 
 interface IProps {
   gameState: number;
@@ -19,7 +19,7 @@ const GameInfo = ({ gameState, flags, onGameRestart }: IProps) => {
             <div className="flex flex-row gap-3">
               <FlagTriangleRight /> {flags}
               <Timer gameState={gameState} />
-              <Trophy /> Top score here: 000
+              {/* <Trophy /> Top score here: 000 */}
             </div>
             {gameState == -1 && (
               <motion.button
