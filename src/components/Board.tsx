@@ -160,15 +160,6 @@ const Board = ({ mode }: IProps) => {
     onTileClick(x, y, newBoard);
   };
 
-  const rows: string = `grid-rows-[${Array(mode.height)
-    .fill('1fr')
-    .join('_')}]`;
-  //* this comment is for tailwindcss to generate grid properly,
-  // ! if you want to add more grid sizes you may need to include them in comment below
-  // grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]
-  // grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]
-  // grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]
-
   return (
     <>
       <GameInfo
@@ -176,7 +167,11 @@ const Board = ({ mode }: IProps) => {
         flags={flags}
         onGameRestart={restartGame}
       />
-      <div className={cn(`grid grid-flow-col m-4 z-20`, rows)}>
+      <div
+        style={{
+          gridTemplateRows: `repeat(${mode.height}, minmax(0,1fr))`,
+        }}
+        className="grid grid-flow-col m-4 z-20">
         {board.map((row, x) =>
           row.map((box, y) => (
             <div
