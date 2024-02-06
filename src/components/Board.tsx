@@ -2,6 +2,7 @@ import IMode from '@/models/IMode';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import GameInfo from './GameInfo';
+import { Bomb, FlagTriangleRight, X } from 'lucide-react';
 
 interface IProps {
   mode: IMode;
@@ -18,6 +19,30 @@ const createBoard = ({ width, height }: IMode): TBoard => {
     Array(height).fill({ value: null, isRevealed: false, isFlagged: false })
   );
 };
+
+const getNumberColor = (number: number): string => {
+  switch (number) {
+    case 1:
+      return 'text-blue-900';
+    case 2:
+      return 'text-green-900';
+    case 3:
+      return 'text-red-900';
+    case 4:
+      return 'text-purple-900';
+    case 5:
+      return 'text-maroon-900';
+    case 6:
+      return 'text-turquoise-900';
+    case 7:
+      return 'text-black-900';
+    case 8:
+      return 'text-gray-900';
+    default:
+      return 'text-black-900';
+  }
+};
+console.log(getNumberColor(1));
 
 const Board = ({ mode }: IProps) => {
   /**
@@ -178,15 +203,15 @@ const Board = ({ mode }: IProps) => {
               key={`${x} + ${y}`}
               data-x-y={`${x}, ${y}`}
               className={cn(
-                'w-8 h-8 border bg-primary  text-primary-foreground',
-                box.value === -1 && gameState == -1 && 'bg-secondary',
+                'w-8 h-8 border bg-primary font-semibold text-xl text-primary-foreground flex items-center justify-center',
+                !box.isRevealed &&
+                  gameState !== -1 &&
+                  !box.isFlagged &&
+                  'shadow-[inset_#e4e4e7_1px_1px_1px_2px]',
                 !box.isRevealed && 'cursor-pointer',
-                box.isRevealed && 'bg-red-500',
-                box.isFlagged && 'bg-blue-500',
-                gameState == -1 &&
-                  box.value !== -1 &&
-                  box.isFlagged &&
-                  'bg-yellow-500'
+
+                box.isRevealed && box.value !== -1 && 'bg-ring',
+                box.isRevealed && getNumberColor(box.value)
               )}
               onContextMenu={(e) => {
                 e.preventDefault();
@@ -205,6 +230,13 @@ const Board = ({ mode }: IProps) => {
                     !box.isFlagged &&
                     onTileClick(x, y);
               }}>
+              {box.isFlagged && (gameState !== -1 || box.value === -1) && (
+                <FlagTriangleRight color="blue" />
+              )}
+              {box.value === -1 && gameState == -1 && !box.isFlagged && (
+                <Bomb color="red" />
+              )}
+              {gameState == -1 && box.isFlagged && box.value !== -1 && <X />}
               {box.isRevealed && box.value > 0 && box.value}
             </div>
           ))
