@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import GameInfo from './GameInfo';
 import { Bomb, FlagTriangleRight, X } from 'lucide-react';
-
+import { motion } from 'framer-motion';
 interface IProps {
   mode: IMode;
 }
@@ -52,7 +52,7 @@ const Board = ({ mode }: IProps) => {
    * - -1: Game finished.
    */
   const [gameState, setGameState] = useState<number>(0);
-  const [board, setBoard] = useState<TBoard>([]);
+  const [board, setBoard] = useState<TBoard>(createBoard(mode));
   const [flags, setFlags] = useState<number>(0);
   useEffect(() => {
     setBoard(createBoard(mode));
@@ -192,14 +192,32 @@ const Board = ({ mode }: IProps) => {
         flags={flags}
         onGameRestart={restartGame}
       />
-      <div
+      <motion.div
+        variants={{
+          visible: {
+            transition: {
+              delay: 0.3,
+              staggerChildren: 0.002,
+            },
+          },
+        }}
+        initial="hidden"
+        animate="visible"
         style={{
           gridTemplateRows: `repeat(${mode.height}, minmax(0,1fr))`,
         }}
         className="grid grid-flow-col m-4 z-20">
         {board.map((row, x) =>
           row.map((box, y) => (
-            <div
+            <motion.div
+              variants={{
+                hidden: { y: 20 },
+                visible: {
+                  y: 0,
+                  scale: [0, 1.2, 0.8, 1],
+                },
+              }}
+              transition={{ duration: 1 }}
               key={`${x} + ${y}`}
               data-x-y={`${x}, ${y}`}
               className={cn(
@@ -238,12 +256,11 @@ const Board = ({ mode }: IProps) => {
               )}
               {gameState == -1 && box.isFlagged && box.value !== -1 && <X />}
               {box.isRevealed && box.value > 0 && box.value}
-            </div>
+            </motion.div>
           ))
         )}
-      </div>
+      </motion.div>
     </>
   );
 };
-
 export default Board;
