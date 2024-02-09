@@ -206,14 +206,24 @@ const Board = ({ mode }: IProps) => {
           {board.map((row, x) =>
             row.map((box, y) => (
               <motion.div
+                whileHover={
+                  !box.isRevealed && !box.isFlagged && gameState !== -1
+                    ? { scale: 0.9 }
+                    : {}
+                }
+                whileTap={gameState !== -1 ? { scale: 1.1 } : {}}
                 variants={{
                   hidden: { y: 10, opacity: 0, scale: 0 },
-                  visible: { y: 0, opacity: 1, scale: 1 },
+                  visible: {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    transition: {
+                      type: 'spring',
+                      stiffness: 1000,
+                    },
+                  },
                   exit: { y: -10, opacity: 0 },
-                }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 1000,
                 }}
                 key={`${x}${y}`}
                 data-x-y={`${x}, ${y}`}
