@@ -192,82 +192,92 @@ const Board = ({ mode }: IProps) => {
         flags={flags}
         onGameRestart={restartGame}
       />
-      <AnimatePresence mode="wait">
-        <motion.div
-          layout
-          variants={{ visible: { transition: { staggerChildren: 0.002 } } }}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          style={{
-            gridTemplateRows: `repeat(${mode.height}, minmax(0,1fr))`,
-          }}
-          className="grid grid-flow-col m-4 z-20">
-          {board.map((row, x) =>
-            row.map((box, y) => (
-              <motion.div
-                whileHover={
-                  !box.isRevealed && !box.isFlagged && gameState !== -1
-                    ? { scale: 0.9 }
-                    : {}
-                }
-                whileTap={gameState !== -1 ? { scale: 1.1 } : {}}
-                variants={{
-                  hidden: { y: 10, opacity: 0, scale: 0 },
-                  visible: {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    transition: {
-                      type: 'spring',
-                      stiffness: 1000,
-                    },
-                  },
-                  exit: { y: -10, opacity: 0 },
-                }}
-                key={`${x}${y}`}
-                data-x-y={`${x}, ${y}`}
-                className={cn(
-                  'w-8 h-8 border bg-primary font-semibold text-xl text-primary-foreground flex items-center justify-center',
-                  !box.isRevealed &&
-                    gameState !== -1 &&
-                    !box.isFlagged &&
-                    'shadow-[inset_#e4e4e7_1px_1px_1px_2px]',
-                  !box.isRevealed && 'cursor-pointer',
-
-                  box.isRevealed && box.value !== -1 && 'bg-ring',
-                  box.isRevealed && getNumberColor(box.value)
-                )}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  if (gameState != -1 && !box.isRevealed) {
-                    setFlags((f) => (box.isFlagged ? f + 1 : f - 1));
-                    const newBoard: TBoard = JSON.parse(JSON.stringify(board));
-                    newBoard[x][y].isFlagged = !newBoard[x][y].isFlagged;
-                    setBoard(newBoard);
+      <motion.div
+        className={cn(
+          'z-20',
+          gameState === -1 ? 'bg-black opacity-70 bg-opacity-0' : 'opacity-100 '
+        )}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            layout
+            variants={{ visible: { transition: { staggerChildren: 0.002 } } }}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{
+              gridTemplateRows: `repeat(${mode.height}, minmax(0,1fr))`,
+            }}
+            className="grid grid-flow-col m-4 z-20">
+            {board.map((row, x) =>
+              row.map((box, y) => (
+                <motion.div
+                  whileHover={
+                    !box.isRevealed && !box.isFlagged && gameState !== -1
+                      ? { scale: 0.9 }
+                      : {}
                   }
-                }}
-                onClick={() => {
-                  gameState == 0
-                    ? startGame(x, y)
-                    : !box.isRevealed &&
-                      gameState != -1 &&
+                  whileTap={gameState !== -1 ? { scale: 1.1 } : {}}
+                  variants={{
+                    hidden: { y: 10, opacity: 0, scale: 0 },
+                    visible: {
+                      y: 0,
+                      opacity: 1,
+                      scale: 1,
+                      transition: {
+                        type: 'spring',
+                        stiffness: 1000,
+                      },
+                    },
+                    exit: { y: -10, opacity: 0 },
+                  }}
+                  key={`${x}${y}`}
+                  data-x-y={`${x}, ${y}`}
+                  className={cn(
+                    'w-8 h-8 border bg-primary font-semibold text-xl text-primary-foreground flex items-center justify-center',
+                    !box.isRevealed &&
+                      gameState !== -1 &&
                       !box.isFlagged &&
-                      onTileClick(x, y);
-                }}>
-                {box.isFlagged && (gameState !== -1 || box.value === -1) && (
-                  <FlagTriangleRight color="blue" />
-                )}
-                {box.value === -1 && gameState == -1 && !box.isFlagged && (
-                  <Bomb color="red" />
-                )}
-                {gameState == -1 && box.isFlagged && box.value !== -1 && <X />}
-                {box.isRevealed && box.value > 0 && box.value}
-              </motion.div>
-            ))
-          )}
-        </motion.div>
-      </AnimatePresence>
+                      'shadow-[inset_#e4e4e7_1px_1px_1px_2px]',
+                    !box.isRevealed && 'cursor-pointer',
+
+                    box.isRevealed && box.value !== -1 && 'bg-ring',
+                    box.isRevealed && getNumberColor(box.value)
+                  )}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    if (gameState != -1 && !box.isRevealed) {
+                      setFlags((f) => (box.isFlagged ? f + 1 : f - 1));
+                      const newBoard: TBoard = JSON.parse(
+                        JSON.stringify(board)
+                      );
+                      newBoard[x][y].isFlagged = !newBoard[x][y].isFlagged;
+                      setBoard(newBoard);
+                    }
+                  }}
+                  onClick={() => {
+                    gameState == 0
+                      ? startGame(x, y)
+                      : !box.isRevealed &&
+                        gameState != -1 &&
+                        !box.isFlagged &&
+                        onTileClick(x, y);
+                  }}>
+                  {box.isFlagged && (gameState !== -1 || box.value === -1) && (
+                    <FlagTriangleRight color="blue" />
+                  )}
+                  {box.value === -1 && gameState == -1 && !box.isFlagged && (
+                    <Bomb color="red" />
+                  )}
+                  {gameState == -1 && box.isFlagged && box.value !== -1 && (
+                    <X />
+                  )}
+                  {box.isRevealed && box.value > 0 && box.value}
+                </motion.div>
+              ))
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
     </>
   );
 };
