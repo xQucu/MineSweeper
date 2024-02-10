@@ -230,6 +230,7 @@ const Board = ({ mode }: IProps) => {
                     },
                     exit: { y: -10, opacity: 0 },
                   }}
+                  transition={{ stiffness: 0 }}
                   key={`${x}${y}`}
                   data-x-y={`${x}, ${y}`}
                   className={cn(
