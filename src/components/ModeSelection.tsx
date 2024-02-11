@@ -7,7 +7,7 @@ interface IProps {
 
 const ModeSelection = ({ onModeChange, modes }: IProps) => {
   return (
-    <div className="z-20">
+    <div className="z-40">
       <Tabs
         defaultValue="medium"
         onValueChange={onModeChange}
