@@ -19,6 +19,7 @@ const Timer = ({ gameState }: IProps) => {
     return () => {
       clearInterval(intervalRef.current);
       gameState == -1 && setTime(0);
+      gameState === 0 && setTime(0);
     };
   }, [gameState]);
 
