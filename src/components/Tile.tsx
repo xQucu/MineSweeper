@@ -70,7 +70,7 @@ const Tile = ({
           ? { scale: 0.9 }
           : {}
       }
-      whileTap={gameState !== -1 ? { scale: 1.1 } : {}}
+      whileTap={gameState !== -1 && !box.isRevealed ? { scale: 1.1 } : {}}
       variants={{
         hidden: { y: 10, opacity: 0, scale: 0 },
         visible: {
@@ -101,7 +101,7 @@ const Tile = ({
         if (box.isFlagged) {
           soundEnabled && flagOffSound.play();
         } else {
-          soundEnabled && flagOnSound.play();
+          soundEnabled && !box.isRevealed && flagOnSound.play();
         }
         if (gameState != -1 && !box.isRevealed) {
           setFlags((f) => (box.isFlagged ? f + 1 : f - 1));
