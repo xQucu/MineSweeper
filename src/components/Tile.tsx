@@ -2,6 +2,10 @@ import { Bomb, FlagTriangleRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import TBoard from '@/models/TBoard';
+import reveal from '@/assets/sounds/reveal.mp3';
+import flagOn from '@/assets/sounds/flagOn.mp3';
+import flagOff from '@/assets/sounds/flagOff.mp3';
+import mine from '@/assets/sounds/mine.mp3';
 interface IProps {
   gameState: number;
   box: { value: number; isRevealed: boolean; isFlagged: boolean };
@@ -17,6 +21,11 @@ interface IProps {
   startGame: (x: number, y: number) => void;
   onTileClick: (x: number, y: number, startingBoard?: TBoard) => void;
 }
+
+const revealSound = new Audio(reveal);
+const flagOnSound = new Audio(flagOn);
+const flagOffSound = new Audio(flagOff);
+const mineSound = new Audio(mine);
 
 const getNumberColor = (number: number): string => {
   switch (number) {
@@ -74,8 +83,6 @@ const Tile = ({
         exit: { y: -10, opacity: 0 },
       }}
       transition={{ stiffness: 0 }}
-      key={`${x}${y}`}
-      data-x-y={`${x}, ${y}`}
       className={cn(
         'w-8 h-8 border bg-primary font-semibold text-xl text-primary-foreground flex items-center justify-center',
         !box.isRevealed &&
@@ -89,6 +96,11 @@ const Tile = ({
       )}
       onContextMenu={(e) => {
         e.preventDefault();
+        if (box.isFlagged) {
+          flagOffSound.play();
+        } else {
+          flagOnSound.play();
+        }
         if (gameState != -1 && !box.isRevealed) {
           setFlags((f) => (box.isFlagged ? f + 1 : f - 1));
           const newBoard: TBoard = JSON.parse(JSON.stringify(board));
@@ -97,12 +109,17 @@ const Tile = ({
         }
       }}
       onClick={() => {
-        gameState == 0
-          ? startGame(x, y)
-          : !box.isRevealed &&
-            gameState != -1 &&
-            !box.isFlagged &&
-            onTileClick(x, y);
+        if (gameState == 0) {
+          startGame(x, y);
+          revealSound.play();
+        } else if (!box.isRevealed && gameState !== -1 && !box.isFlagged) {
+          if (box.value === -1) {
+            mineSound.play();
+          } else {
+            revealSound.play();
+          }
+          onTileClick(x, y);
+        }
       }}>
       {box.isFlagged && (gameState !== -1 || box.value === -1) && (
         <FlagTriangleRight color="blue" />

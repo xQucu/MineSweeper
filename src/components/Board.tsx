@@ -181,6 +181,7 @@ const Board = ({ mode }: IProps) => {
             {board.map((row, x) =>
               row.map((box, y) => (
                 <Tile
+                  key={`${x}${y}`}
                   gameState={gameState}
                   box={box}
                   setFlags={setFlags}
