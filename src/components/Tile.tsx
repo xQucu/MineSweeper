@@ -7,6 +7,7 @@ import flagOn from '@/assets/sounds/flagOn.mp3';
 import flagOff from '@/assets/sounds/flagOff.mp3';
 import mine from '@/assets/sounds/mine.mp3';
 interface IProps {
+  soundEnabled: boolean;
   gameState: number;
   box: { value: number; isRevealed: boolean; isFlagged: boolean };
   setFlags: React.Dispatch<React.SetStateAction<number>>;
@@ -51,6 +52,7 @@ const getNumberColor = (number: number): string => {
 };
 
 const Tile = ({
+  soundEnabled,
   gameState,
   box,
   setFlags,
@@ -97,9 +99,9 @@ const Tile = ({
       onContextMenu={(e) => {
         e.preventDefault();
         if (box.isFlagged) {
-          flagOffSound.play();
+          soundEnabled && flagOffSound.play();
         } else {
-          flagOnSound.play();
+          soundEnabled && flagOnSound.play();
         }
         if (gameState != -1 && !box.isRevealed) {
           setFlags((f) => (box.isFlagged ? f + 1 : f - 1));
@@ -111,12 +113,12 @@ const Tile = ({
       onClick={() => {
         if (gameState == 0) {
           startGame(x, y);
-          revealSound.play();
+          soundEnabled && revealSound.play();
         } else if (!box.isRevealed && gameState !== -1 && !box.isFlagged) {
           if (box.value === -1) {
-            mineSound.play();
+            soundEnabled && mineSound.play();
           } else {
-            revealSound.play();
+            soundEnabled && revealSound.play();
           }
           onTileClick(x, y);
         }

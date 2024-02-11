@@ -1,15 +1,26 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import Timer from './Timer';
 import { Meteors } from './ui/meteors';
-import { FlagTriangleRight } from 'lucide-react';
+import { FlagTriangleRight, Volume2, VolumeX } from 'lucide-react';
+import toggleSound from '@/assets/sounds/toggleSound.mp3';
 
 interface IProps {
   gameState: number;
   flags: number;
   onGameRestart: () => void;
+  soundEnabled: boolean;
+  setSoundEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const GameInfo = ({ gameState, flags, onGameRestart }: IProps) => {
+const soundToggle = new Audio(toggleSound);
+
+const GameInfo = ({
+  gameState,
+  flags,
+  onGameRestart,
+  soundEnabled,
+  setSoundEnabled,
+}: IProps) => {
   return (
     <>
       <div className="my-4">
@@ -21,6 +32,13 @@ const GameInfo = ({ gameState, flags, onGameRestart }: IProps) => {
           <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 transform scale-[0.80] bg-red-500 rounded-full blur-3xl" />
           <div className="relative shadow-xl bg-gray-900 border border-gray-800  px-4 py-3 h-full overflow-hidden rounded-2xl flex flex-col justify-center items-center gap-3 ">
             <div className="flex flex-row gap-3">
+              <div
+                onClick={() => {
+                  soundToggle.play();
+                  setSoundEnabled((s) => !s);
+                }}>
+                {soundEnabled ? <Volume2 /> : <VolumeX />}
+              </div>
               <FlagTriangleRight /> {flags}
               <Timer gameState={gameState} />
               {/* <Trophy /> Top score here: 000 */}

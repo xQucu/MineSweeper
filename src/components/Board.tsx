@@ -25,6 +25,7 @@ const Board = ({ mode }: IProps) => {
   const [gameState, setGameState] = useState<number>(0);
   const [board, setBoard] = useState<TBoard>(createBoard(mode));
   const [flags, setFlags] = useState<number>(0);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   useEffect(() => {
     setBoard(createBoard(mode));
     setGameState(0);
@@ -161,6 +162,8 @@ const Board = ({ mode }: IProps) => {
         gameState={gameState}
         flags={flags}
         onGameRestart={restartGame}
+        soundEnabled={soundEnabled}
+        setSoundEnabled={setSoundEnabled}
       />
       <motion.div
         className={cn(
@@ -181,6 +184,7 @@ const Board = ({ mode }: IProps) => {
             {board.map((row, x) =>
               row.map((box, y) => (
                 <Tile
+                  soundEnabled={soundEnabled}
                   key={`${x}${y}`}
                   gameState={gameState}
                   box={box}
