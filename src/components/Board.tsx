@@ -165,42 +165,46 @@ const Board = ({ mode }: IProps) => {
         soundEnabled={soundEnabled}
         setSoundEnabled={setSoundEnabled}
       />
-      <motion.div
-        className={cn(
-          'z-20',
-          gameState === -1 ? 'bg-black opacity-70 bg-opacity-0' : 'opacity-100 '
-        )}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            layout
-            variants={{ visible: { transition: { staggerChildren: 0.002 } } }}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            style={{
-              gridTemplateRows: `repeat(${mode.height}, minmax(0,1fr))`,
-            }}
-            className="grid grid-flow-col m-4 z-20">
-            {board.map((row, x) =>
-              row.map((box, y) => (
-                <Tile
-                  soundEnabled={soundEnabled}
-                  key={`${x}${y}`}
-                  gameState={gameState}
-                  box={box}
-                  setFlags={setFlags}
-                  x={x}
-                  y={y}
-                  setBoard={setBoard}
-                  board={board}
-                  startGame={startGame}
-                  onTileClick={onTileClick}
-                />
-              ))
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
+      <div className="w-screen z-20 overflow-auto max-h-screen max-w-fit m-4">
+        <motion.div
+          className={cn(
+            'z-20',
+            gameState === -1
+              ? 'bg-black opacity-70 bg-opacity-0'
+              : 'opacity-100 '
+          )}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              layout
+              variants={{ visible: { transition: { staggerChildren: 0.002 } } }}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{
+                gridTemplateRows: `repeat(${mode.height}, minmax(0,1fr))`,
+              }}
+              className="grid grid-flow-col m-4 z-20">
+              {board.map((row, x) =>
+                row.map((box, y) => (
+                  <Tile
+                    soundEnabled={soundEnabled}
+                    key={`${x}${y}`}
+                    gameState={gameState}
+                    box={box}
+                    setFlags={setFlags}
+                    x={x}
+                    y={y}
+                    setBoard={setBoard}
+                    board={board}
+                    startGame={startGame}
+                    onTileClick={onTileClick}
+                  />
+                ))
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+      </div>
     </>
   );
 };
