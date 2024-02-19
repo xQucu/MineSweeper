@@ -86,7 +86,7 @@ const Tile = ({
       }}
       transition={{ stiffness: 0 }}
       className={cn(
-        'w-8 h-8 border bg-primary font-semibold text-xl text-primary-foreground flex items-center justify-center',
+        'select-none w-8 h-8 border bg-primary font-semibold text-xl text-primary-foreground flex items-center justify-center',
         !box.isRevealed &&
           gameState !== -1 &&
           !box.isFlagged &&

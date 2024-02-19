@@ -52,8 +52,8 @@ const GameInfo = ({
                   className="border px-4 py-1 rounded-lg  border-gray-500 text-gray-300"
                   onClick={onGameRestart}>
                   {gameState === -1 && flags === 0
-                    ? 'Start Game'
-                    : 'Play Again'}
+                    ? 'Play Again'
+                    : 'Try Again'}
                 </motion.button>
               )}
             </AnimatePresence>
